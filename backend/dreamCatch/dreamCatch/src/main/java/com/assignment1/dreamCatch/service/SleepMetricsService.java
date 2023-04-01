@@ -27,46 +27,58 @@ public class SleepMetricsService {
         return sleepMetricsRepo.save(sleepMetrics);
     }
 
-    public Map<Long, Float> getReport(String metricOption) {
-        List<SleepMetrics> sleepMetricsList = sleepMetricsRepo.findAll();
-        Map<Long, List<Integer>> originalMap = new HashMap<>();
-        for (SleepMetrics sleepMetrics : sleepMetricsList) {
-            List<Integer> list;
-            Dream foundDream = dreamRepo.getDreamById(sleepMetrics.getId());
-            if (foundDream.getDate() == null) {
-                foundDream.setDate(LocalDate.now());
-            }
-            Long day = (long) foundDream.getDate().getDayOfWeek().getValue();
-            if (!originalMap.containsKey(day)) {
-                list = new ArrayList<>();
-
-            } else {
-                list = originalMap.get(day);
-            }
-
-            if (metricOption.equals("duration")) {
-                list.add(sleepMetrics.getDurationLevel());
-            } else if (metricOption.equals("energy")) {
-                list.add(sleepMetrics.getEnergyLevel());
-            } else {
-                list.add(sleepMetrics.getStressLevel());
-            }
-
-            originalMap.put(day, list);
-        }
-
-        return originalMap.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> {
-                            List<Integer> values = entry.getValue();
-                            float sum = 0;
-                            for (int value : values) {
-                                sum += value;
-                            }
-                            return sum / values.size();
-                        }
-                ));
+    public List<SleepMetrics> getSleepMetricsForLastMonth() {
+        return sleepMetricsRepo.findByMonth();
     }
 
+    public List<SleepMetrics> getSleepMetricsForLastWeek() {
+        return sleepMetricsRepo.findByWeek();
+    }
+
+//    public Map<Long, Float> getReport(String metricOption) {
+//        List<SleepMetrics> sleepMetricsList = sleepMetricsRepo.findAll();
+//        Map<Long, List<Integer>> originalMap = new HashMap<>();
+//        for (SleepMetrics sleepMetrics : sleepMetricsList) {
+//            List<Integer> list;
+//            Dream foundDream = dreamRepo.getDreamById(sleepMetrics.getId());
+//            if (foundDream.getDate() == null) {
+//                foundDream.setDate(LocalDate.now());
+//            }
+//            Long day = (long) foundDream.getDate().getDayOfWeek().getValue();
+//            if (!originalMap.containsKey(day)) {
+//                list = new ArrayList<>();
+//
+//            } else {
+//                list = originalMap.get(day);
+//            }
+//
+//            if (metricOption.equals("duration")) {
+//                list.add(sleepMetrics.getDurationLevel());
+//            } else if (metricOption.equals("energy")) {
+//                list.add(sleepMetrics.getEnergyLevel());
+//            } else {
+//                list.add(sleepMetrics.getStressLevel());
+//            }
+//
+//            originalMap.put(day, list);
+//        }
+//
+//        return getAveragePerDayOfWeek(originalMap);
+//    }
+
+    public SleepMetricsRepo getSleepMetricsRepo() {
+        return sleepMetricsRepo;
+    }
+
+    public void setSleepMetricsRepo(SleepMetricsRepo sleepMetricsRepo) {
+        this.sleepMetricsRepo = sleepMetricsRepo;
+    }
+
+    public DreamRepo getDreamRepo() {
+        return dreamRepo;
+    }
+
+    public void setDreamRepo(DreamRepo dreamRepo) {
+        this.dreamRepo = dreamRepo;
+    }
 }
