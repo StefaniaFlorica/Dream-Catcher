@@ -1,0 +1,22 @@
+label,
+textarea {
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.text__area {
+    padding: 10px;
+    top: 100px;
+    margin-bottom: 100px;
+    
+}
+.border-red {
+    border: 1px solid red;
+  }
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+form {
+    display: inline-block;
+}
